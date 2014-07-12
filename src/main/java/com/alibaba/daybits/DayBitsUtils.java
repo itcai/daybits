@@ -6,8 +6,17 @@ import java.util.Calendar;
 
 public class DayBitsUtils {
 
-    private static int[]    daySecondsCache = new int[10 * 12 * 31];           // 10 years
-    private static int[]    dayCache        = new int[10 * 12 * 31];           // 10 years
+    /**
+     * This array is a lookup table that translates 6-bit positive integer index values into their "Base64 Alphabet"
+     * equivalents as specified in Table 1 of RFC 2045.
+     */
+    public static final char intToBase64[]   = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+            'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+            '4', '5', '6', '7', '8', '9', '+', '/' };
+
+    private static int[]      daySecondsCache = new int[10 * 12 * 31];           // 10 years
+    private static int[]      dayCache        = new int[10 * 12 * 31];           // 10 years
     static {
         Calendar calendar_20100101 = Calendar.getInstance();
         calendar_20100101.set(Calendar.YEAR, 2010);
@@ -45,7 +54,7 @@ public class DayBitsUtils {
         }
     }
 
-    static SimpleDateFormat format          = new SimpleDateFormat("yyyyMMdd");
+    static SimpleDateFormat   format          = new SimpleDateFormat("yyyyMMdd");
 
     public static int quarterIndex(int month) {
         if (month < 1 || month > 12) {
@@ -88,7 +97,7 @@ public class DayBitsUtils {
             int dayCacheIndex = (year - 2010) * 366 + quarterIndex * 31 * 3 + dayOfQuarter;
             return dayCache[dayCacheIndex];
         }
-       
+
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, quarterIndex * 3);
@@ -97,13 +106,13 @@ public class DayBitsUtils {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        
+
         calendar.add(Calendar.DAY_OF_YEAR, dayOfQuarter);
-        
+
         int month = calendar.get(Calendar.MONTH) + 1;
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        
-        return year * 10000 + (month + 1) * 100 + dayOfMonth; 
+
+        return year * 10000 + month * 100 + dayOfMonth;
     }
 
     public static int seconds(int year, int month, int dayOfMonth) {
@@ -142,7 +151,7 @@ public class DayBitsUtils {
 
         return calendar.getTimeInMillis();
     }
-    
+
     public static byte[] compact(byte[] bytes) {
         int i = bytes.length - 1;
         for (; i >= 0; --i) {

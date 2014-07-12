@@ -62,8 +62,8 @@ public class DayBitsParser {
     Year parseYear() {
         if (ch == '#') {
             daybits.beforeYears = daybits.years;
+            daybits.years = null;
             next();
-            return null;
         }
 
         if (ch == ';') {
@@ -74,7 +74,7 @@ public class DayBitsParser {
         Year year = new Year();
 
         for (int i = 0; i < 4; ++i) {
-            if (ch == ';' || isEOF()) {
+            if (ch == ';' || ch == '#' || isEOF()) {
                 break;
             }
 
@@ -91,10 +91,14 @@ public class DayBitsParser {
         }
 
         if (!isEOF()) {
-            if (ch != ';') {
-                throw new IllegalStateException();
+            if (ch == '#') {
+                // skip
+            } else {
+                if (ch != ';') {
+                    throw new IllegalStateException();
+                }
+                next();
             }
-            next();
         }
 
         return year;
@@ -114,10 +118,18 @@ public class DayBitsParser {
             }
         }
         int charsLen = sepIndex - pos;
-        
+
         byte[] bytes = this.decodeFast(pos, charsLen);
-        
-        pos = sepIndex + 1;
+
+        pos = sepIndex;
+        if (pos < chars.length()) {
+            ch = chars.charAt(pos);
+            if (ch == ',') {
+                next();
+            }
+        } else {
+            eof = true;
+        }
 
         return new Quarter(bytes);
     }

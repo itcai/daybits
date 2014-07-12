@@ -53,7 +53,7 @@ public class DayBits {
         StringBuilder buf = new StringBuilder();
 
         if (beforeYears != null) {
-            for (int i = 0; i < beforeYears.size(); ++i) {
+            for (int i = beforeYears.size() - 1; i >= 0; --i) {
                 Year year = beforeYears.get(i);
                 if (year != null) {
                     year.explain(buf, 2012 - i);
@@ -71,6 +71,42 @@ public class DayBits {
         }
 
         return buf.toString();
+    }
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        output(buf);
+        return buf.toString();
+    }
+
+    public void output(StringBuilder buf) {
+        if (beforeYears != null) {
+            for (int i = 0; i < beforeYears.size(); ++i) {
+                if (i != 0) {
+                    buf.append(';');
+                }
+                Year year = beforeYears.get(i);
+                if (year != null) {
+                    year.output(buf);
+                }
+            }
+        }
+
+        if (years != null) {
+            if (buf.length() > 0) {
+                buf.append('#');
+            }
+
+            for (int i = 0; i < years.size(); ++i) {
+                if (i != 0) {
+                    buf.append(';');
+                }
+                Year year = years.get(i);
+                if (year != null) {
+                    year.output(buf);
+                }
+            }
+        }
     }
 
     public Year getYear(int yearIndex) {
@@ -112,7 +148,7 @@ public class DayBits {
                 beforeYears = new ArrayList<Year>(4);
             }
 
-            yearIndex = -yearIndex;
+            yearIndex = (-yearIndex) - 1;
 
             if (yearIndex >= beforeYears.size()) {
                 if (!create) {
@@ -305,6 +341,45 @@ public class DayBits {
             }
             quarter.explain(out, year, quarterIndex);
         }
+
+        public void output(StringBuilder out) {
+            if (winter != null) {
+                output(out, spring);
+                out.append(',');
+                output(out, summer);
+                out.append(',');
+                output(out, autumn);
+                out.append(',');
+                output(out, winter);
+                return;
+            }
+
+            if (autumn != null) {
+                output(out, spring);
+                out.append(',');
+                output(out, summer);
+                out.append(',');
+                output(out, autumn);
+                return;
+            }
+
+            if (summer != null) {
+                output(out, spring);
+                out.append(',');
+                output(out, summer);
+                return;
+            }
+
+            output(out, spring);
+        }
+
+        private void output(StringBuilder out, Quarter quarter) {
+            if (quarter == null) {
+                return;
+            }
+            quarter.output(out);
+        }
+
     }
 
     public static class Quarter {
@@ -314,6 +389,49 @@ public class DayBits {
         public Quarter(byte[] bytes){
             super();
             this.bytes = bytes;
+        }
+
+        public void output(StringBuilder out) {
+            if (bytes == null || bytes.length == 0) {
+                return;
+            }
+
+            int bytesLen = bytes.length;
+            int numFullGroups = bytesLen / 3;
+            int numBytesInPartialGroup = bytesLen - 3 * numFullGroups;
+            int resultLen = 4 * ((bytesLen + 2) / 3);
+            out.ensureCapacity(out.length() + resultLen);
+            char[] intToAlpha = DayBitsUtils.intToBase64;
+
+            // Translate all full groups from byte array elements to Base64
+            int inCursor = 0;
+            for (int i = 0; i < numFullGroups; i++) {
+                int byte0 = bytes[inCursor++] & 0xff;
+                int byte1 = bytes[inCursor++] & 0xff;
+                int byte2 = bytes[inCursor++] & 0xff;
+                out.append(intToAlpha[byte0 >> 2]);
+                out.append(intToAlpha[(byte0 << 4) & 0x3f | (byte1 >> 4)]);
+                out.append(intToAlpha[(byte1 << 2) & 0x3f | (byte2 >> 6)]);
+                out.append(intToAlpha[byte2 & 0x3f]);
+            }
+
+            // Translate partial group if present
+            if (numBytesInPartialGroup != 0) {
+                int byte0 = bytes[inCursor++] & 0xff;
+                out.append(intToAlpha[byte0 >> 2]);
+                if (numBytesInPartialGroup == 1) {
+                    out.append(intToAlpha[(byte0 << 4) & 0x3f]);
+                    out.append("==");
+                } else {
+                    // assert numBytesInPartialGroup == 2;
+                    int byte1 = bytes[inCursor++] & 0xff;
+                    out.append(intToAlpha[(byte0 << 4) & 0x3f | (byte1 >> 4)]);
+                    out.append(intToAlpha[(byte1 << 2) & 0x3f]);
+                    out.append('=');
+                }
+            }
+            // assert inCursor == a.length;
+            // assert result.length() == resultLen;
         }
 
         public void explain(StringBuilder out, int year, int quarterIndex) {
