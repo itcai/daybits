@@ -94,3 +94,24 @@ odps函数
 		<td>设置daybits某一天为true</td>
 	</tr>
 </table>
+
+## daybits_concat
+用途:聚合函数，用于通过原始数据构建daybits。<br/>
+函数定义:
+
+	STRING daybits_concat(STRING date)
+
+参数:<br/>
+ date yyyymmdd格式日期字符串<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+
+    
+    select member_id, daybits_concat(ds)
+    from my_table
+    group by member_id
+    
+      
+
