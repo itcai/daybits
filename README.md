@@ -284,3 +284,39 @@ odps函数
     
     select daybits_last(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回20140207
     
+
+## daybits_and    
+用途: 返回两个daybits数据的交集<br/>
+函数定义:
+     
+     STRING daybits_and(STRING daybits_a, STRING daybits_b)
+
+     
+参数:<br/>
+ daybits_a daybits格式字符串<br/>
+ daybits_b daybits格式字符串<br/>
+ <br/>
+返回值: 返回两个daybits数据的交集，daybits格式字符串<br/>
+
+示例:
+    
+    select daybits_and(';AAAAAChCywMgAg==', ';AAAAAChCywMgAg==') from dual -- 返回 ';AAAAAChCywMgAg=='
+
+    
+## daybits_or    
+用途: 返回两个daybits数据的并集<br/>
+函数定义:
+     
+     STRING daybits_or(STRING daybits_a, STRING daybits_b)
+
+     
+参数:<br/>
+ daybits_a daybits格式字符串<br/>
+ daybits_b daybits格式字符串<br/>
+ <br/>
+返回值: 返回两个daybits数据的并集，daybits格式字符串<br/>
+
+示例:
+    
+    select daybits_or(';AAAAAChCywMgAg==', ';AAAAAChCywMgAg==') from dual -- 返回 ';AAAAAChCywMgAg=='
+
