@@ -16,14 +16,14 @@ public class DayBitsConcat extends UDAF {
         }
 
         public void iterate(String date) {
-            daybits.set(date);
-        }
-        
-        public void iterate(Long date) {
-            daybits.set(date);
+            daybits.set(date, true);
         }
 
         public void merge(String pr) {
+            if (pr == null || pr.isEmpty()) {
+                return;
+            }
+            
             DayBitsParser parser = new DayBitsParser(pr);
             DayBits prDaybits = parser.parse();
             if (this.daybits != null) {
@@ -38,7 +38,13 @@ public class DayBitsConcat extends UDAF {
                 return null;
             }
             
-            return daybits.toString();
+            String text = daybits.toString();
+            
+            if (text.isEmpty()) {
+                return null;
+            }
+            
+            return text;
         }
 
         public String terminate() {
@@ -46,10 +52,21 @@ public class DayBitsConcat extends UDAF {
                 return null;
             }
             
-            return daybits.toString();
+            String text = daybits.toString();
+            
+            if (text.isEmpty()) {
+                return null;
+            }
+            
+            return text;
         }
 
         public void setPartial(String pr) {
+            if (pr == null || pr.isEmpty()) {
+                this.daybits = new DayBits();
+                return;
+            }
+            
             DayBitsParser parser = new DayBitsParser(pr);
             this.daybits = parser.parse();
         }

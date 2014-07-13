@@ -181,13 +181,13 @@ public class DayBits {
         return year.get(dateValue);
     }
 
-    public boolean set(String dateValue) {
+    public boolean set(String dateValue, boolean value) {
         if (dateValue == null || dateValue.isEmpty()) {
             return false;
         }
 
         int intDateValue = Integer.parseInt(dateValue);
-        return set(intDateValue);
+        return set(intDateValue, value);
     }
 
     public boolean set(Long dateValue) {
@@ -198,15 +198,49 @@ public class DayBits {
         int intDateValue = dateValue.intValue();
         return set(intDateValue);
     }
-
+    
     public boolean set(int dateValue) {
+        return set(dateValue, true);
+    }
+
+    public boolean set(int dateValue, boolean value) {
         if (dateValue < 19700101 || dateValue > 20991231) {
             throw new IllegalArgumentException("illegal dateValue : " + dateValue);
         }
 
         int yearIndex = (dateValue / 10000) - 2013;
         Year year = getYear(yearIndex, true);
-        return year.set(dateValue);
+        return year.set(dateValue, value);
+    }
+    
+    public String explain(String start, String end) {
+        int startValue = start == null ? 19700101 : Integer.parseInt(start);
+        int endValue = end == null ? 20991231 : Integer.parseInt(end);
+        return explain(startValue, endValue);
+    }
+    
+    public String explain(int start, int end) {
+        StringBuilder buf = new StringBuilder();
+
+        if (beforeYears != null) {
+            for (int i = beforeYears.size() - 1; i >= 0; --i) {
+                Year year = beforeYears.get(i);
+                if (year != null) {
+                    year.explain(buf, 2012 - i, start, end);
+                }
+            }
+        }
+
+        if (years != null) {
+            for (int i = 0; i < years.size(); ++i) {
+                Year year = years.get(i);
+                if (year != null) {
+                    year.explain(buf, 2013 + i, start, end);
+                }
+            }
+        }
+
+        return buf.toString();
     }
 
     public String explain() {
@@ -504,7 +538,7 @@ public class DayBits {
             this.winter = winter;
         }
 
-        public boolean set(int dateValue) {
+        public boolean set(int dateValue, boolean value) {
             int year = dateValue / 10000;
             int monthDayValue = dateValue % 10000;
 
@@ -541,7 +575,7 @@ public class DayBits {
 
             int dayOfQuarter = (daySeconds - quarterFirstDaySeconds) / (24 * 3600);
 
-            return quarter.set(dayOfQuarter);
+            return quarter.set(dayOfQuarter, value);
         }
 
         public boolean get(int dateValue) {
@@ -587,6 +621,13 @@ public class DayBits {
 
             return quarter.get(dayOfQuarter);
         }
+        
+        public void explain(StringBuilder out, int year, int start, int end) {
+            explain(out, year, 0, spring, start, end);
+            explain(out, year, 1, summer, start, end);
+            explain(out, year, 2, autumn, start, end);
+            explain(out, year, 3, winter, start, end);
+        }
 
         public void explain(StringBuilder out, int year) {
             explain(out, year, 0, spring);
@@ -600,6 +641,13 @@ public class DayBits {
                 return;
             }
             quarter.explain(out, year, quarterIndex);
+        }
+        
+        private final void explain(StringBuilder out, int year, int quarterIndex, Quarter quarter, int start, int end) {
+            if (quarter == null) {
+                return;
+            }
+            quarter.explain(out, year, quarterIndex, start, end);
         }
 
         public int first(int year) {
@@ -781,6 +829,32 @@ public class DayBits {
                             out.append(',');
                         }
                         out.append(dateValue);
+                    }
+                }
+            }
+        }
+        
+        public void explain(StringBuilder out, int year, int quarterIndex, int start, int end) {
+            if (bytes == null) {
+                return;
+            }
+
+            for (int i = 0; i < bytes.length; ++i) {
+                byte value = bytes[i];
+
+                for (int bitIndex = 0; bitIndex < 8; ++bitIndex) {
+                    if (((value & (1 << bitIndex)) != 0)) {
+                        int dayOfQuarter = i * 8 + bitIndex;
+                        int dateValue = DayBitsUtils.getDateValue(year, quarterIndex, dayOfQuarter);
+                        if (dateValue > end) {
+                            break;
+                        }
+                        if (dateValue >= start && dateValue <= end) {
+                            if (out.length() > 0) {
+                                out.append(',');
+                            }
+                            out.append(dateValue);
+                        }
                     }
                 }
             }

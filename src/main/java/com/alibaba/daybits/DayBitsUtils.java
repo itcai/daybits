@@ -48,7 +48,7 @@ public class DayBitsUtils {
             int quarterFirstDaySeconds = seconds(year, firstMonthOfQuarter(month + 1), 1);
             int dayOfQuarter = (seconds - quarterFirstDaySeconds) / (3600 * 24);
             int quarterIndex = quarterIndex(month + 1);
-            int dayCacheIndex = (year - 2010) * 366 + quarterIndex * 31 * 3 + dayOfQuarter;
+            int dayCacheIndex = (year - 2010) * 31 * 12 + quarterIndex * 31 * 3 + dayOfQuarter;
             int dateValue = (year * 10000) + (month + 1) * 100 + dayOfMonth;
             dayCache[dayCacheIndex] = dateValue;
         }
@@ -94,7 +94,7 @@ public class DayBitsUtils {
 
     public static int getDateValue(int year, int quarterIndex, int dayOfQuarter) {
         if (year >= 2010 && year < 2020) {
-            int dayCacheIndex = (year - 2010) * 366 + quarterIndex * 31 * 3 + dayOfQuarter;
+            int dayCacheIndex = (year - 2010) * 31 * 12 + quarterIndex * 31 * 3 + dayOfQuarter;
             return dayCache[dayCacheIndex];
         }
 

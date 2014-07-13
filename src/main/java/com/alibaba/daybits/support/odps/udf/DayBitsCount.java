@@ -7,12 +7,20 @@ import com.aliyun.odps.udf.UDF;
 public class DayBitsCount extends UDF {
 
     public Long evaluate(String text) {
+        if (text == null || text.isEmpty()) {
+            return 0L;
+        }
+        
         DayBitsParser parser = new DayBitsParser(text);
         DayBits daybits = parser.parse();
         return Long.valueOf(daybits.count());
     }
 
     public Long evaluate(String text, Long start, Long end) {
+        if (text == null || text.isEmpty()) {
+            return 0L;
+        }
+        
         DayBitsParser parser = new DayBitsParser(text);
         DayBits daybits = parser.parse();
         return Long.valueOf(daybits.count(start, end));
