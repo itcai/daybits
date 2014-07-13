@@ -211,3 +211,28 @@ odps函数
     select *
     from my_tabel
     where daybits_count(event_trace, 20140301, 20140331) > 0
+
+## daybits_explain    
+用途: 将daybits字符串解析为可读的日期字符串<br/>
+函数定义:
+     
+     STRING daybits_explain(STRING daybits)
+     STRING daybits_explain(STRING daybits, STRING start)
+     STRING daybits_explain(STRING daybits, STRING start, STRING end)
+     STRING daybits_explain(STRING daybits, BIGINT start)
+     STRING daybits_explain(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 以逗号分隔的日期<br/>
+
+示例:
+    
+    -- 返回 20140205,20140207,20140211,20140216,20140218,20140219,20140221,20140224,20140225,20140226,20140227,20140311,20140315
+    select daybits_explain(';AAAAAChCywMgAg==') from dual
+    
+    select daybits_explain(';AAAAAChCywMgAg==', 20140205, 20140207) from dual -- 返回20140205,20140207
+    
