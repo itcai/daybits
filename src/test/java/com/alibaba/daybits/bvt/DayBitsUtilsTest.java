@@ -12,7 +12,7 @@ public class DayBitsUtilsTest extends TestCase {
 
     public void test_0() throws Exception {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2010);
+        calendar.set(Calendar.YEAR, 1990);
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -20,7 +20,7 @@ public class DayBitsUtilsTest extends TestCase {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        for (long i = 0; i < 366 * 30; ++i) {
+        for (long i = 0; i < 366 * 60; ++i) {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH) + 1;
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -33,6 +33,10 @@ public class DayBitsUtilsTest extends TestCase {
             }
             
             calendar.add(Calendar.DAY_OF_MONTH, 1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
         }
     }
 }

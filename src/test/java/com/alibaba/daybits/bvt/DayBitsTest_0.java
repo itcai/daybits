@@ -21,15 +21,15 @@ public class DayBitsTest_0 extends TestCase {
         Assert.assertEquals(1, daybits.count(20140201, 20140201));
         Assert.assertEquals(1, daybits.count(20130102, 20130102));
         Assert.assertEquals(0, daybits.count(20120102, 20120102));
-        Assert.assertEquals(20130102, daybits.first());
-        Assert.assertEquals(20140201, daybits.last());
+        Assert.assertEquals(20130102, daybits.first().intValue());
+        Assert.assertEquals(20140201, daybits.last().intValue());
 
         Assert.assertFalse(daybits.set(20140201)); // not changed
         Assert.assertFalse(daybits.set(20130102)); // no changed
 
         Assert.assertEquals(2, daybits.count());
-        Assert.assertEquals(20130102, daybits.first());
-        Assert.assertEquals(20140201, daybits.last());
+        Assert.assertEquals(20130102, daybits.first().intValue());
+        Assert.assertEquals(20140201, daybits.last().intValue());
 
         Assert.assertFalse(daybits.get(20140101));
         Assert.assertFalse(daybits.get(20110205));
@@ -39,20 +39,20 @@ public class DayBitsTest_0 extends TestCase {
         Assert.assertTrue(daybits.set(20110205));
         Assert.assertFalse(daybits.set(20110205));
         Assert.assertTrue(daybits.get(20110205));
-        Assert.assertEquals(20110205, daybits.first());
-        Assert.assertEquals(20140201, daybits.last());
+        Assert.assertEquals(20110205, daybits.first().intValue());
+        Assert.assertEquals(20140201, daybits.last().intValue());
 
         Assert.assertTrue(daybits.set(20090321));
         Assert.assertFalse(daybits.set(20090321));
         Assert.assertTrue(daybits.get(20090321));
-        Assert.assertEquals(20090321, daybits.first());
-        Assert.assertEquals(20140201, daybits.last());
+        Assert.assertEquals(20090321, daybits.first().intValue());
+        Assert.assertEquals(20140201, daybits.last().intValue());
 
         Assert.assertTrue(daybits.set(20090416));
         Assert.assertFalse(daybits.set(20090416));
         Assert.assertTrue(daybits.get(20090416));
-        Assert.assertEquals(20090321, daybits.first());
-        Assert.assertEquals(20140201, daybits.last());
+        Assert.assertEquals(20090321, daybits.first().intValue());
+        Assert.assertEquals(20140201, daybits.last().intValue());
 
         Assert.assertTrue(daybits.set(20090322));
         Assert.assertTrue(daybits.set(20090323));
@@ -60,8 +60,8 @@ public class DayBitsTest_0 extends TestCase {
         Assert.assertTrue(daybits.set(20140202));
         Assert.assertTrue(daybits.set(20140203));
 
-        Assert.assertEquals(20090321, daybits.first());
-        Assert.assertEquals(20140203, daybits.last());
+        Assert.assertEquals(20090321, daybits.first().intValue());
+        Assert.assertEquals(20140203, daybits.last().intValue());
 
         Assert.assertEquals("20090321,20090322,20090323,20090416,20110205,20130102,20140201,20140202,20140203",
                             daybits.explain());

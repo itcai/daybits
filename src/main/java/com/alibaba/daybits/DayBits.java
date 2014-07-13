@@ -95,7 +95,7 @@ public class DayBits {
         return changed;
     }
 
-    public int first() {
+    public Long first() {
         int first = -1;
         if (beforeYears != null) {
             for (int i = beforeYears.size() - 1; i >= 0; --i) {
@@ -105,7 +105,7 @@ public class DayBits {
                 }
                 first = year.first(2012 - i);
                 if (first != -1) {
-                    return first;
+                    return (long) first;
                 }
             }
         }
@@ -119,15 +119,19 @@ public class DayBits {
 
                 first = year.first(2013 + i);
                 if (first != -1) {
-                    return first;
+                    return (long) first;
                 }
             }
         }
 
-        return first;
+        if (first == -1) {
+            return null;
+        }
+
+        return (long) first;
     }
 
-    public int last() {
+    public Long last() {
         int last = -1;
         if (years != null) {
             for (int i = years.size() - 1; i >= 0; --i) {
@@ -137,7 +141,7 @@ public class DayBits {
                 }
                 last = year.last(2013 + i);
                 if (last != -1) {
-                    return last;
+                    return (long) last;
                 }
             }
         }
@@ -151,25 +155,32 @@ public class DayBits {
 
                 last = year.last(2012 - i);
                 if (last != -1) {
-                    return last;
+                    return (long) last;
                 }
             }
         }
 
-        return last;
+        if (last == -1) {
+            return null;
+        }
+
+        return (long) last;
+    }
+
+    public Boolean get(String dateValue) {
+        if (dateValue == null || dateValue.isEmpty()) {
+            return null;
+        }
+
+        int intDateValue = Integer.parseInt(dateValue);
+        return get(intDateValue);
     }
 
     /**
      * @param dateValue 20120417
      */
     public boolean get(int dateValue) {
-        if (dateValue < 19700101) {
-            throw new IllegalArgumentException("illegal arg : " + dateValue);
-        }
-
-        if (dateValue >= 21000101) {
-            throw new IllegalArgumentException("illegal arg : " + dateValue);
-        }
+        DayBitsUtils.check(dateValue);
 
         int yearIndex = (dateValue / 10000) - 2013;
         Year year = getYear(yearIndex);
@@ -198,27 +209,25 @@ public class DayBits {
         int intDateValue = dateValue.intValue();
         return set(intDateValue);
     }
-    
+
     public boolean set(int dateValue) {
         return set(dateValue, true);
     }
 
     public boolean set(int dateValue, boolean value) {
-        if (dateValue < 19700101 || dateValue > 20991231) {
-            throw new IllegalArgumentException("illegal dateValue : " + dateValue);
-        }
+        DayBitsUtils.check(dateValue);
 
         int yearIndex = (dateValue / 10000) - 2013;
         Year year = getYear(yearIndex, true);
         return year.set(dateValue, value);
     }
-    
+
     public String explain(String start, String end) {
         int startValue = start == null ? 19700101 : Integer.parseInt(start);
         int endValue = end == null ? 20991231 : Integer.parseInt(end);
         return explain(startValue, endValue);
     }
-    
+
     public String explain(int start, int end) {
         StringBuilder buf = new StringBuilder();
 
@@ -555,25 +564,17 @@ public class DayBits {
             }
 
             Quarter quarter;
-            int quarterFirstMonth;
-            if (month >= 1 && month <= 3) {
+            if (month <= 3) {
                 quarter = getSpring(true);
-                quarterFirstMonth = 1;
-            } else if (month >= 4 && month <= 6) {
+            } else if (month <= 6) {
                 quarter = getSummer(true);
-                quarterFirstMonth = 4;
-            } else if (month >= 7 && month <= 9) {
+            } else if (month <= 9) {
                 quarter = getAutumn(true);
-                quarterFirstMonth = 7;
             } else {
                 quarter = getWinter(true);
-                quarterFirstMonth = 10;
             }
 
-            long quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
-            long daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
-
-            int dayOfQuarter = (int) ((daySeconds - quarterFirstDaySeconds) / (24L * 3600L));
+            int dayOfQuarter = DayBitsUtils.dayOfQuarter(year, month, dayOfMonth);
 
             return quarter.set(dayOfQuarter, value);
         }
@@ -595,33 +596,25 @@ public class DayBits {
             }
 
             Quarter quarter;
-            int quarterFirstMonth;
             if (month >= 1 && month <= 3) {
                 quarter = spring;
-                quarterFirstMonth = 1;
             } else if (month >= 4 && month <= 6) {
                 quarter = summer;
-                quarterFirstMonth = 4;
             } else if (month >= 7 && month <= 9) {
                 quarter = autumn;
-                quarterFirstMonth = 7;
             } else {
                 quarter = winter;
-                quarterFirstMonth = 10;
             }
 
             if (quarter == null) {
                 return false;
             }
 
-            long quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
-            long daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
-
-            int dayOfQuarter = (int) ((daySeconds - quarterFirstDaySeconds) / (24L * 3600L));
+            int dayOfQuarter = DayBitsUtils.dayOfQuarter(year, month, dayOfMonth);
 
             return quarter.get(dayOfQuarter);
         }
-        
+
         public void explain(StringBuilder out, int year, int start, int end) {
             explain(out, year, 0, spring, start, end);
             explain(out, year, 1, summer, start, end);
@@ -642,7 +635,7 @@ public class DayBits {
             }
             quarter.explain(out, year, quarterIndex);
         }
-        
+
         private final void explain(StringBuilder out, int year, int quarterIndex, Quarter quarter, int start, int end) {
             if (quarter == null) {
                 return;
@@ -833,7 +826,7 @@ public class DayBits {
                 }
             }
         }
-        
+
         public void explain(StringBuilder out, int year, int quarterIndex, int start, int end) {
             if (bytes == null) {
                 return;

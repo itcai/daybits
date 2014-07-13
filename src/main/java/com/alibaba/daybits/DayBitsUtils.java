@@ -132,7 +132,7 @@ public class DayBitsUtils {
 
         return calendar.getTimeInMillis() / 1000L;
     }
-    
+
     public static long millis(int year, int month, int dayOfMonth) {
         if (year >= 2010 && year < 2020) {
             int valueIndex = (year - 2010) * (12 * 31) + (month - 1) * 31 + (dayOfMonth - 1);
@@ -152,6 +152,59 @@ public class DayBitsUtils {
         return calendar.getTimeInMillis();
     }
 
+    public static int dayOfQuarter(int year, int month, int dayOfMonth) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("illegal month : " + month);
+        }
+
+        int quarterFirstMonth;
+        if (month < 4) {
+            quarterFirstMonth = 1;
+        } else if (month < 7) {
+            quarterFirstMonth = 4;
+        } else if (month < 10) {
+            quarterFirstMonth = 7;
+        } else {
+            quarterFirstMonth = 10;
+        }
+
+        long quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
+        long daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
+
+        if (year == 1986 && month >= 4 && month <= 6) {
+            if (month > 5 || (month == 5 && dayOfMonth >= 5)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1987 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 12)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1987 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 11)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1988 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 10)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1989 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 16)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1990 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 15)) {
+                daySeconds += 3600L;
+            }
+        } else if (year == 1991 && month >= 4 && month <= 6) {
+            if (month > 4 || (month == 4 && dayOfMonth >= 14)) {
+                daySeconds += 3600L;
+            }
+        }
+
+        int dayOfQuarter = (int) ((daySeconds - quarterFirstDaySeconds) / (24L * 3600L));
+        return dayOfQuarter;
+    }
+
     public static byte[] compact(byte[] bytes) {
         int i = bytes.length - 1;
         for (; i >= 0; --i) {
@@ -165,5 +218,15 @@ public class DayBitsUtils {
         }
 
         return bytes;
+    }
+    
+    public static void check(int dateValue) {
+        if (dateValue < 19700101) {
+            throw new IllegalArgumentException("illegal arg : " + dateValue);
+        }
+
+        if (dateValue >= 21991231) {
+            throw new IllegalArgumentException("illegal arg : " + dateValue);
+        }
     }
 }

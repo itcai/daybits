@@ -14,9 +14,42 @@ public class DayBitsSet extends UDF {
     }
 
     public String evaluate(String text, String date, Boolean value) {
-        DayBitsParser parser = new DayBitsParser(text);
-        DayBits daybits = parser.parse();
+        DayBits daybits;
+        if (text == null || text.isEmpty()) {
+            if (date == null || value == null || !value) {
+                return null;
+            }
+            daybits = new DayBits();
+        } else {
+            DayBitsParser parser = new DayBitsParser(text);
+            daybits = parser.parse();
+        }
+        
         boolean changed = daybits.set(date, value);
+        if (!changed) {
+            return text;
+        }
+
+        return daybits.toString();
+    }
+    
+    public String evaluate(String text, Long date) {
+        return evaluate(text, date, true);
+    }
+    
+    public String evaluate(String text, Long date, Boolean value) {
+        DayBits daybits;
+        if (text == null || text.isEmpty()) {
+            if (date == null || value == null || !value) {
+                return null;
+            }
+            daybits = new DayBits();
+        } else {
+            DayBitsParser parser = new DayBitsParser(text);
+            daybits = parser.parse();
+        }
+        
+        boolean changed = daybits.set(date.intValue(), value);
         if (!changed) {
             return text;
         }

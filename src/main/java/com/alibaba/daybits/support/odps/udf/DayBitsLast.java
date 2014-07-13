@@ -10,8 +10,12 @@ public class DayBitsLast extends UDF {
     }
 
     public Long evaluate(String text) {
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+        
         DayBitsParser parser = new DayBitsParser(text);
         DayBits daybits = parser.parse();
-        return Long.valueOf(daybits.last());
+        return daybits.last();
     }
 }
