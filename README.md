@@ -7,8 +7,8 @@ daybits
 odps函数
 =======
 <table>
-	<tr><td>函数名</td><td>UDF实现类</td><td>函数介绍</td></tr>
-	<tr><td>daybits_concat</td><td>com.alibaba.daybits.support.odps.udf.DayBitsConcat</td><td></td></tr>
-	<tr><td>daybits_merge</td><td>com.alibaba.daybits.support.odps.udf.DayBitsMerge</td><td></td></tr>
-	<tr><td>daybits_set</td><td>com.alibaba.daybits.support.odps.udf.DayBitsSet</td><td></td></tr>
+	<tr><td>函数名</td><td>函数类型</td><td>UDF实现类</td><td>函数介绍</td></tr>
+	<tr><td>daybits_concat</td><td>UDAF</td><td>com.alibaba.daybits.support.odps.udf.DayBitsConcat</td><td></td></tr>
+	<tr><td>daybits_merge</td><td>UDAF</td><td>com.alibaba.daybits.support.odps.udf.DayBitsMerge</td><td></td></tr>
+	<tr><td>daybits_set</td><td>UDF</td><td>com.alibaba.daybits.support.odps.udf.DayBitsSet</td><td></td></tr>
 </table>
