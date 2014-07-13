@@ -1,7 +1,7 @@
 package com.alibaba.daybits.support.odps.udf;
 
 import com.alibaba.daybits.DayBits;
-import com.alibaba.daybits.DayBitsParser;
+import com.alibaba.daybits.DayBitsUtils;
 import com.aliyun.odps.udf.UDAF;
 import com.aliyun.odps.udf.UDAFEvaluator;
 
@@ -20,8 +20,7 @@ public class DayBitsMerge extends UDAF {
 		        return;
 		    }
 		    
-		    DayBitsParser parser = new DayBitsParser(text);
-            DayBits other = parser.parse();
+            DayBits other = DayBitsUtils.parse(text);
 			daybits.merge(other);
 		}
 
@@ -30,8 +29,7 @@ public class DayBitsMerge extends UDAF {
                 return;
             }
             
-            DayBitsParser parser = new DayBitsParser(pr);
-            DayBits prDaybits = parser.parse();
+            DayBits prDaybits = DayBitsUtils.parse(pr);
             if (this.daybits != null) {
                 this.daybits.merge(prDaybits);
             } else {
@@ -73,8 +71,7 @@ public class DayBitsMerge extends UDAF {
 	                return;
 	            }
 	            
-	            DayBitsParser parser = new DayBitsParser(pr);
-	            this.daybits = parser.parse();
+	            this.daybits = DayBitsUtils.parse(pr);
 	        }
 	    }
 }

@@ -1,7 +1,7 @@
 package com.alibaba.daybits.support.odps.udf;
 
 import com.alibaba.daybits.DayBits;
-import com.alibaba.daybits.DayBitsParser;
+import com.alibaba.daybits.DayBitsUtils;
 import com.aliyun.odps.udf.UDF;
 
 public class DayBitsSet extends UDF {
@@ -21,8 +21,7 @@ public class DayBitsSet extends UDF {
             }
             daybits = new DayBits();
         } else {
-            DayBitsParser parser = new DayBitsParser(text);
-            daybits = parser.parse();
+            daybits = DayBitsUtils.parse(text);
         }
         
         boolean changed = daybits.set(date, value);
@@ -45,8 +44,7 @@ public class DayBitsSet extends UDF {
             }
             daybits = new DayBits();
         } else {
-            DayBitsParser parser = new DayBitsParser(text);
-            daybits = parser.parse();
+            daybits = DayBitsUtils.parse(text);
         }
         
         boolean changed = daybits.set(date.intValue(), value);

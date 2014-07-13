@@ -2,7 +2,6 @@ package com.alibaba.daybits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DayBits {
@@ -1018,9 +1017,5 @@ public class DayBits {
             }
             return changed;
         }
-    }
-
-    static long millis(int year, int month, int dayOfMonth) {
-        return new GregorianCalendar(year, month - 1, dayOfMonth).getTimeInMillis();
     }
 }

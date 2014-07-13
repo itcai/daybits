@@ -1,7 +1,7 @@
 package com.alibaba.daybits.support.odps.udf;
 
 import com.alibaba.daybits.DayBits;
-import com.alibaba.daybits.DayBitsParser;
+import com.alibaba.daybits.DayBitsUtils;
 import com.aliyun.odps.udf.UDF;
 
 public class DayBitsLast extends UDF {
@@ -14,8 +14,7 @@ public class DayBitsLast extends UDF {
             return null;
         }
         
-        DayBitsParser parser = new DayBitsParser(text);
-        DayBits daybits = parser.parse();
+        DayBits daybits = DayBitsUtils.parse(text);
         return daybits.last();
     }
 }

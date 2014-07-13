@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.daybits.DayBits;
-import com.alibaba.daybits.DayBitsParser;
+import com.alibaba.daybits.DayBitsUtils.DayBitsParser;
 
 public class DayBitsTest_0 extends TestCase {
 
