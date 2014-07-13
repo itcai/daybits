@@ -236,3 +236,51 @@ odps函数
     
     select daybits_explain(';AAAAAChCywMgAg==', 20140205, 20140207) from dual -- 返回20140205,20140207
     
+
+## daybits_first    
+用途: 返回daybits字符串中的首次日期<br/>
+函数定义:
+     
+     BIGINT daybits_first(STRING daybits)
+     BIGINT daybits_first(STRING daybits, STRING start)
+     BIGINT daybits_first(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_first(STRING daybits, BIGINT start)
+     BIGINT daybits_first(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 返回yyyymmdd格式的整数<br/>
+
+示例:
+    
+    select daybits_first(';AAAAAChCywMgAg==') from dual -- 返回 20140205
+    
+    select daybits_first(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回20140207
+    
+    
+## daybits_last    
+用途: 返回daybits字符串中的末次日期<br/>
+函数定义:
+     
+     BIGINT daybits_last(STRING daybits)
+     BIGINT daybits_last(STRING daybits, STRING start)
+     BIGINT daybits_last(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_last(STRING daybits, BIGINT start)
+     BIGINT daybits_last(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 返回yyyymmdd格式的整数<br/>
+
+示例:
+    
+    select daybits_last(';AAAAAChCywMgAg==') from dual -- 返回 20140315
+    
+    select daybits_last(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回20140207
+    
