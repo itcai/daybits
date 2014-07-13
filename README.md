@@ -114,4 +114,43 @@ odps函数
     group by member_id
     
       
+## daybits_merge
+用途:聚合函数，用于通过合并多个daybits。<br/>
+函数定义:
 
+	STRING daybits_merge(STRING daybits)
+
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+
+    
+    select member_id, daybits_merge(event_trace)
+    from my_table
+    group by member_id
+    
+      
+## daybits_set
+用途:聚合函数，用于通过合并多个daybits。<br/>
+函数定义:
+
+	STRING daybits_set(STRING daybits, STRING date)
+	STRING daybits_set(STRING daybits, BIGINT date)
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ date yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+    
+    select member_id, daybits_set(event_trace, '20140322')
+    from my_table
+    
+    select member_id, daybits_set(event_trace, 20140322)
+    from my_table
+    
+    
