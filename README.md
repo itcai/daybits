@@ -134,11 +134,13 @@ odps函数
     
       
 ## daybits_set
-用途:聚合函数，用于通过合并多个daybits。<br/>
+用途:设置daybits数据中某一天的数值<br/>
 函数定义:
 
 	STRING daybits_set(STRING daybits, STRING date)
 	STRING daybits_set(STRING daybits, BIGINT date)
+	STRING daybits_set(STRING daybits, STRING date, BOOLEAN value)
+	STRING daybits_set(STRING daybits, BIGINT date, BOOLEAN value)
 参数:<br/>
  daybits daybits格式字符串<br/>
  date yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
@@ -151,6 +153,12 @@ odps函数
     from my_table
     
     select member_id, daybits_set(event_trace, 20140322)
+    from my_table
+    
+    select member_id, daybits_set(event_trace, '20140322', false)
+    from my_table
+    
+    select member_id, daybits_set(event_trace, 20140322, false)
     from my_table
     
     
