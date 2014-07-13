@@ -104,6 +104,14 @@ public class DayBits {
 
         return changed;
     }
+    
+    public boolean exists(String start, String end) {
+        return first(start(start), end(end)) != null;
+    }
+
+    public boolean exists(Long start, Long end) {
+        return first(start(start), end(end)) != null;
+    }
 
     public Long first() {
         return first(START, END);

@@ -18,7 +18,7 @@ public class DayBitsCount extends UDF {
     public Long evaluate(String text, Long start, Long end) {
         DayBits daybits = DayBitsUtils.parse(text);
         if (daybits == null) {
-            return null;
+            return 0L;
         }
         return Long.valueOf(daybits.count(start, end));
     }
@@ -30,7 +30,7 @@ public class DayBitsCount extends UDF {
     public Long evaluate(String text, String start, String end) {
         DayBits daybits = DayBitsUtils.parse(text);
         if (daybits == null) {
-            return null;
+            return 0L;
         }
         return Long.valueOf(daybits.count(start, end));
     }
