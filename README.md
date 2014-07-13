@@ -46,6 +46,13 @@ odps函数
 		<td>查看daybits数据中存在多少天，输入是daybits数据，可以指定开始和结束时间</td>
 	</tr>
 	<tr>
+		<td>daybits_exists</td>
+		<td>Boolean</td>
+		<td>UDF</td>
+		<td>com.alibaba.daybits.support.odps.udf.DayBitsExists</td>
+		<td>查看daybits数据中是否存在指定范围的日期，输入是daybits数据和开始和结束时间</td>
+	</tr>
+	<tr>
 		<td>daybits_explain</td>
 		<td>String</td>
 		<td>UDF</td>
@@ -211,6 +218,33 @@ odps函数
     select *
     from my_tabel
     where daybits_count(event_trace, 20140301, 20140331) > 0
+
+## daybits_exists
+用途: 判断daybits数据中存在的天数<br/>
+函数定义:
+     
+     BOOLEAN daybits_exists(STRING daybits)
+     BOOLEAN daybits_exists(STRING daybits, STRING start)
+     BOOLEAN daybits_exists(STRING daybits, STRING start, STRING end)
+     BOOLEAN daybits_exists(STRING daybits, BIGINT start)
+     BOOLEAN daybits_exists(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否存在<br/>
+
+示例:
+    
+    select daybits_exists(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回true
+    
+    -- 查找20140301~20140331期间出现的记录
+    select *
+    from my_tabel
+    where daybits_exists(event_trace, 20140301, 20140331)
+
 
 ## daybits_explain    
 用途: 将daybits字符串解析为可读的日期字符串<br/>
