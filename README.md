@@ -46,6 +46,13 @@ odps函数
 		<td>查看daybits数据中存在多少天，输入是daybits数据，可以指定开始和结束时间</td>
 	</tr>
 	<tr>
+		<td>daybits_exists</td>
+		<td>Boolean</td>
+		<td>UDF</td>
+		<td>com.alibaba.daybits.support.odps.udf.DayBitsExists</td>
+		<td>查看daybits数据中是否存在指定范围的日期，输入是daybits数据和开始和结束时间</td>
+	</tr>
+	<tr>
 		<td>daybits_explain</td>
 		<td>String</td>
 		<td>UDF</td>
@@ -94,3 +101,256 @@ odps函数
 		<td>设置daybits某一天为true</td>
 	</tr>
 </table>
+
+## daybits_concat
+用途:聚合函数，用于通过原始数据构建daybits。<br/>
+函数定义:
+
+	STRING daybits_concat(STRING date)
+
+参数:<br/>
+ date yyyymmdd格式日期字符串<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+
+    
+    select member_id, daybits_concat(ds)
+    from my_table
+    group by member_id
+    
+      
+## daybits_merge
+用途:聚合函数，用于通过合并多个daybits。<br/>
+函数定义:
+
+	STRING daybits_merge(STRING daybits)
+
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+
+    
+    select member_id, daybits_merge(event_trace)
+    from my_table
+    group by member_id
+    
+      
+## daybits_set
+用途:设置daybits数据中某一天的值<br/>
+函数定义:
+
+	STRING daybits_set(STRING daybits, STRING date)
+	STRING daybits_set(STRING daybits, BIGINT date)
+	STRING daybits_set(STRING daybits, STRING date, BOOLEAN value)
+	STRING daybits_set(STRING daybits, BIGINT date, BOOLEAN value)
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ date yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: daybits格式字符串<br/>
+
+示例:
+    
+    select member_id, daybits_set(event_trace, '20140322')
+    from my_table
+    
+    select member_id, daybits_set(event_trace, 20140322)
+    from my_table
+    
+    select member_id, daybits_set(event_trace, '20140322', false)
+    from my_table
+    
+    select member_id, daybits_set(event_trace, 20140322, false)
+    from my_table
+    
+    
+## daybits_get
+用途: 判断daybits数据中某一天的值<br/>
+函数定义:
+     
+     BOOLEAN daybits_get(STRING daybits, STRING date)
+     BOOLEAN daybits_get(STRING daybits, BIGINT date)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ date yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否已经设置<br/>
+
+示例:
+    
+    select daybits_get(';AAAAAChCywMgAg==', 20140205) from dual
+    
+    select daybits_get(';AAAAAChCywMgAg==', '20140205‘) from dual
+
+## daybits_count    
+用途: 判断daybits数据中存在的天数<br/>
+函数定义:
+     
+     BIGINT daybits_count(STRING daybits)
+     BIGINT daybits_count(STRING daybits, STRING start)
+     BIGINT daybits_count(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_count(STRING daybits, BIGINT start)
+     BIGINT daybits_count(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否已经设置<br/>
+
+示例:
+    
+    -- ;AAAAAChCywMgAg==的结果是: 20140205,20140207,20140211,20140216,20140218,20140219,20140221,20140224,20140225,20140226,20140227,20140311,20140315
+    select daybits_count(';AAAAAChCywMgAg==') from dual -- 返回14
+    
+    select daybits_count(';AAAAAChCywMgAg==', 20140205) from dual -- 返回13
+    
+    select daybits_count(';AAAAAChCywMgAg==', 20140205, 20140207) from dual -- 返回2
+    
+    -- 查找20140301~20140331期间出现的记录
+    select *
+    from my_tabel
+    where daybits_count(event_trace, 20140301, 20140331) > 0
+
+## daybits_exists
+用途: 判断daybits数据中存在的天数<br/>
+函数定义:
+     
+     BOOLEAN daybits_exists(STRING daybits)
+     BOOLEAN daybits_exists(STRING daybits, STRING start)
+     BOOLEAN daybits_exists(STRING daybits, STRING start, STRING end)
+     BOOLEAN daybits_exists(STRING daybits, BIGINT start)
+     BOOLEAN daybits_exists(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否存在<br/>
+
+示例:
+    
+    select daybits_exists(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回true
+    
+    -- 查找20140301~20140331期间出现的记录
+    select *
+    from my_tabel
+    where daybits_exists(event_trace, 20140301, 20140331)
+
+
+## daybits_explain    
+用途: 将daybits字符串解析为可读的日期字符串<br/>
+函数定义:
+     
+     STRING daybits_explain(STRING daybits)
+     STRING daybits_explain(STRING daybits, STRING start)
+     STRING daybits_explain(STRING daybits, STRING start, STRING end)
+     STRING daybits_explain(STRING daybits, BIGINT start)
+     STRING daybits_explain(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 以逗号分隔的日期<br/>
+
+示例:
+    
+    -- 返回 20140205,20140207,20140211,20140216,20140218,20140219,20140221,20140224,20140225,20140226,20140227,20140311,20140315
+    select daybits_explain(';AAAAAChCywMgAg==') from dual
+    
+    select daybits_explain(';AAAAAChCywMgAg==', 20140205, 20140207) from dual -- 返回20140205,20140207
+    
+
+## daybits_first    
+用途: 返回daybits字符串中的首次日期<br/>
+函数定义:
+     
+     BIGINT daybits_first(STRING daybits)
+     BIGINT daybits_first(STRING daybits, STRING start)
+     BIGINT daybits_first(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_first(STRING daybits, BIGINT start)
+     BIGINT daybits_first(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 返回yyyymmdd格式的整数<br/>
+
+示例:
+    
+    select daybits_first(';AAAAAChCywMgAg==') from dual -- 返回 20140205
+    
+    select daybits_first(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回20140207
+    
+    
+## daybits_last    
+用途: 返回daybits字符串中的末次日期<br/>
+函数定义:
+     
+     BIGINT daybits_last(STRING daybits)
+     BIGINT daybits_last(STRING daybits, STRING start)
+     BIGINT daybits_last(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_last(STRING daybits, BIGINT start)
+     BIGINT daybits_last(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 返回yyyymmdd格式的整数<br/>
+
+示例:
+    
+    select daybits_last(';AAAAAChCywMgAg==') from dual -- 返回 20140315
+    
+    select daybits_last(';AAAAAChCywMgAg==', 20140206, 20140207) from dual -- 返回20140207
+    
+
+## daybits_and    
+用途: 返回两个daybits数据的交集<br/>
+函数定义:
+     
+     STRING daybits_and(STRING daybits_a, STRING daybits_b)
+
+     
+参数:<br/>
+ daybits_a daybits格式字符串<br/>
+ daybits_b daybits格式字符串<br/>
+ <br/>
+返回值: 返回两个daybits数据的交集，daybits格式字符串<br/>
+
+示例:
+    
+    select daybits_and(';AAAAAChCywMgAg==', ';AAAAAChCywMgAg==') from dual -- 返回 ';AAAAAChCywMgAg=='
+
+    
+## daybits_or    
+用途: 返回两个daybits数据的并集<br/>
+函数定义:
+     
+     STRING daybits_or(STRING daybits_a, STRING daybits_b)
+
+     
+参数:<br/>
+ daybits_a daybits格式字符串<br/>
+ daybits_b daybits格式字符串<br/>
+ <br/>
+返回值: 返回两个daybits数据的并集，daybits格式字符串<br/>
+
+示例:
+    
+    select daybits_or(';AAAAAChCywMgAg==', ';AAAAAChCywMgAg==') from dual -- 返回 ';AAAAAChCywMgAg=='
+
