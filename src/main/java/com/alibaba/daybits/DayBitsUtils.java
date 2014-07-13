@@ -3,6 +3,10 @@ package com.alibaba.daybits;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+
+import com.alibaba.daybits.DayBits.Quarter;
+import com.alibaba.daybits.DayBits.Year;
 
 public class DayBitsUtils {
 
@@ -219,7 +223,7 @@ public class DayBitsUtils {
 
         return bytes;
     }
-    
+
     public static void check(int dateValue) {
         if (dateValue < 19700101) {
             throw new IllegalArgumentException("illegal arg : " + dateValue);
@@ -228,5 +232,99 @@ public class DayBitsUtils {
         if (dateValue >= 21991231) {
             throw new IllegalArgumentException("illegal arg : " + dateValue);
         }
+    }
+
+    public static List<Year> and(List<Year> years_a, List<Year> years_b) {
+        if (years_a == null || years_b == null) {
+            return null;
+        }
+
+        if (years_a.size() <= years_b.size()) {
+            for (int i = 0; i < years_a.size(); ++i) {
+                years_a.set(i, and(years_a.get(i), years_b.get(i)));
+            }
+            return compact_years(years_a);
+        } else {
+            for (int i = 0; i < years_b.size(); ++i) {
+                years_b.set(i, and(years_a.get(i), years_b.get(i)));
+            }
+            return compact_years(years_b);
+        }
+    }
+
+    public static DayBits or(DayBits a, DayBits b) {
+        if (a == null && b == null) {
+            return null;
+        }
+        
+        if (a == null) {
+            return b;
+        }
+        
+        if (b == null) {
+            return a;
+        }
+        
+        a.merge(b);
+        return a;
+    }
+
+    public static Year and(Year a, Year b) {
+        if (a == null || b == null) {
+            return null;
+        }
+        a.and(b);
+        return a;
+    }
+
+    public static Quarter and(Quarter a, Quarter b) {
+        if (a == null || b == null) {
+            return null;
+        }
+        a.and(b);
+        return a;
+    }
+
+    public static byte[] and(byte[] bytes_a, byte[] bytes_b) {
+        byte[] x, y;
+        if (bytes_a.length > bytes_b.length) {
+            x = bytes_a;
+            y = bytes_b;
+        } else {
+            x = bytes_b;
+            y = bytes_a;
+        }
+
+        for (int i = 0; i < y.length; ++i) {
+            y[i] &= x[i];
+        }
+
+        return compact(y);
+    }
+
+    public static List<Year> compact_years(List<Year> years) {
+        int i = years.size() - 1;
+        for (; i >= 0; --i) {
+            if (years.get(i) != null && !years.get(i).isEmpty()) {
+                break;
+            }
+            years.remove(i);
+        }
+
+        return years;
+    }
+    
+    public static String toString(DayBits daybits) {
+        if (daybits == null) {
+            return null;
+        }
+        
+        String text = daybits.toString();
+        
+        if (text != null && text.isEmpty()) {
+            return null;
+        }
+        
+        return text;
     }
 }

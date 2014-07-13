@@ -20,6 +20,11 @@ public class DayBits {
 
         years.add(year);
     }
+    
+    public void and(DayBits o) {
+        this.beforeYears = DayBitsUtils.and(this.beforeYears, o.beforeYears);
+        this.years = DayBitsUtils.and(this.years, o.years);
+    }
 
     public int merge(DayBits o) {
         int changed = 0;
@@ -490,7 +495,14 @@ public class DayBits {
 
             return changed;
         }
-
+        
+        public void and(Year o) {
+            this.spring = DayBitsUtils.and(this.spring, o.spring);
+            this.summer = DayBitsUtils.and(this.summer, o.summer);
+            this.autumn = DayBitsUtils.and(this.autumn, o.autumn);
+            this.winter = DayBitsUtils.and(this.winter, o.winter);
+        }
+        
         public Quarter getSpring(boolean create) {
             if (create && spring == null) {
                 spring = new Quarter(null);
@@ -689,6 +701,10 @@ public class DayBits {
 
         public int count() {
             return count(spring) + count(summer) + count(autumn) + count(winter);
+        }
+        
+        public boolean isEmpty() {
+            return count() == 0;
         }
 
         private int count(Quarter quarter) {
@@ -906,7 +922,11 @@ public class DayBits {
 
             return ((bytes[byteIndex] & (1 << bitIndex)) != 0);
         }
-
+        
+        public void and(Quarter o) {
+            this.bytes = DayBitsUtils.and(this.bytes, o.bytes);
+        }
+        
         public boolean set(int dayOfQuarter) {
             return set(dayOfQuarter, true);
         }

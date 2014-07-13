@@ -58,6 +58,14 @@ public class DayBitsParser {
         }
         return daybits;
     }
+    
+    public static DayBits parse(String text) {
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+        DayBitsParser parser = new DayBitsParser(text);
+        return parser.parse();
+    }
 
     Year parseYear() {
         if (ch == '#') {
