@@ -15,8 +15,8 @@ public class DayBitsUtils {
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', '+', '/' };
 
-    private static int[]      daySecondsCache = new int[10 * 12 * 31];           // 10 years
-    private static int[]      dayCache        = new int[10 * 12 * 31];           // 10 years
+    private static int[]     daySecondsCache = new int[10 * 12 * 31];           // 10 years
+    private static int[]     dayCache        = new int[10 * 12 * 31];           // 10 years
     static {
         Calendar calendar_20100101 = Calendar.getInstance();
         calendar_20100101.set(Calendar.YEAR, 2010);
@@ -45,8 +45,8 @@ public class DayBitsUtils {
             int valueIndex = (year - 2010) * (12 * 31) + month * 31 + (dayOfMonth - 1);
             daySecondsCache[valueIndex] = seconds;
 
-            int quarterFirstDaySeconds = seconds(year, firstMonthOfQuarter(month + 1), 1);
-            int dayOfQuarter = (seconds - quarterFirstDaySeconds) / (3600 * 24);
+            long quarterFirstDaySeconds = seconds(year, firstMonthOfQuarter(month + 1), 1);
+            int dayOfQuarter = (int) ((seconds - quarterFirstDaySeconds) / (3600L * 24L));
             int quarterIndex = quarterIndex(month + 1);
             int dayCacheIndex = (year - 2010) * 31 * 12 + quarterIndex * 31 * 3 + dayOfQuarter;
             int dateValue = (year * 10000) + (month + 1) * 100 + dayOfMonth;
@@ -54,7 +54,7 @@ public class DayBitsUtils {
         }
     }
 
-    static SimpleDateFormat   format          = new SimpleDateFormat("yyyyMMdd");
+    static SimpleDateFormat  format          = new SimpleDateFormat("yyyyMMdd");
 
     public static int quarterIndex(int month) {
         if (month < 1 || month > 12) {
@@ -115,7 +115,7 @@ public class DayBitsUtils {
         return year * 10000 + month * 100 + dayOfMonth;
     }
 
-    public static int seconds(int year, int month, int dayOfMonth) {
+    public static long seconds(int year, int month, int dayOfMonth) {
         if (year >= 2010 && year < 2020) {
             int valueIndex = (year - 2010) * (12 * 31) + (month - 1) * 31 + (dayOfMonth - 1);
             return daySecondsCache[valueIndex];
@@ -130,9 +130,9 @@ public class DayBitsUtils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        return (int) (calendar.getTimeInMillis() / 1000L);
+        return calendar.getTimeInMillis() / 1000L;
     }
-
+    
     public static long millis(int year, int month, int dayOfMonth) {
         if (year >= 2010 && year < 2020) {
             int valueIndex = (year - 2010) * (12 * 31) + (month - 1) * 31 + (dayOfMonth - 1);

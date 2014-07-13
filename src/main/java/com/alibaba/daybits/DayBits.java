@@ -570,10 +570,10 @@ public class DayBits {
                 quarterFirstMonth = 10;
             }
 
-            int quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
-            int daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
+            long quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
+            long daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
 
-            int dayOfQuarter = (daySeconds - quarterFirstDaySeconds) / (24 * 3600);
+            int dayOfQuarter = (int) ((daySeconds - quarterFirstDaySeconds) / (24L * 3600L));
 
             return quarter.set(dayOfQuarter, value);
         }
@@ -614,10 +614,10 @@ public class DayBits {
                 return false;
             }
 
-            int quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
-            int daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
+            long quarterFirstDaySeconds = DayBitsUtils.seconds(year, quarterFirstMonth, 1);
+            long daySeconds = DayBitsUtils.seconds(year, month, dayOfMonth);
 
-            int dayOfQuarter = (daySeconds - quarterFirstDaySeconds) / (24 * 3600);
+            int dayOfQuarter = (int) ((daySeconds - quarterFirstDaySeconds) / (24L * 3600L));
 
             return quarter.get(dayOfQuarter);
         }
