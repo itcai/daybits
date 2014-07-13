@@ -8,6 +8,9 @@ import java.util.List;
 import com.alibaba.daybits.DayBits.Quarter;
 import com.alibaba.daybits.DayBits.Year;
 
+import static com.alibaba.daybits.DayBits.START;
+import static com.alibaba.daybits.DayBits.END;
+
 public class DayBitsUtils {
 
     /**
@@ -225,11 +228,11 @@ public class DayBitsUtils {
     }
 
     public static void check(int dateValue) {
-        if (dateValue < 19700101) {
+        if (dateValue < DayBits.START) {
             throw new IllegalArgumentException("illegal arg : " + dateValue);
         }
 
-        if (dateValue >= 21991231) {
+        if (dateValue > DayBits.END) {
             throw new IllegalArgumentException("illegal arg : " + dateValue);
         }
     }
@@ -525,4 +528,35 @@ public class DayBitsUtils {
         }
     }
 
+    static int start(String start) {
+        if (start == null || start.isEmpty()) {
+            return START;
+        }
+        
+        return Integer.parseInt(start);
+    }
+    
+    static int start(Long start) {
+        if (start == null) {
+            return START;
+        }
+        
+        return start.intValue();
+    }
+    
+    static int end(String end) {
+        if (end == null || end.isEmpty()) {
+            return END;
+        }
+        
+        return Integer.parseInt(end);
+    }
+    
+    static int end(Long end) {
+        if (end == null) {
+            return END;
+        }
+        
+        return end.intValue();
+    }
 }

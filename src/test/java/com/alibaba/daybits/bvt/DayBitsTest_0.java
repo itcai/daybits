@@ -41,6 +41,11 @@ public class DayBitsTest_0 extends TestCase {
         Assert.assertTrue(daybits.set(20130102, true));
         Assert.assertEquals("Ag==;AAAAgA==", daybits.toString());
         
+        Assert.assertTrue(daybits.set(20130302, true));
+        System.out.println(daybits.toString());
+//        Assert.assertEquals("", daybits.toString());
+        Assert.assertTrue(daybits.set(20130302, false));
+        
         Assert.assertEquals(2, daybits.count());
         Assert.assertEquals(20130102, daybits.first().intValue());
         Assert.assertEquals(20140201, daybits.last().intValue());

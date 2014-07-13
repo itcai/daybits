@@ -16,11 +16,10 @@ public class DayBitsCount extends UDF {
     }
 
     public Long evaluate(String text, Long start, Long end) {
-        if (text == null || text.isEmpty()) {
-            return 0L;
-        }
-
         DayBits daybits = DayBitsUtils.parse(text);
+        if (daybits == null) {
+            return null;
+        }
         return Long.valueOf(daybits.count(start, end));
     }
 
@@ -29,9 +28,11 @@ public class DayBitsCount extends UDF {
     }
 
     public Long evaluate(String text, String start, String end) {
-        Long startValue = start == null ? null : Long.parseLong(start);
-        Long endValue = end == null ? null : Long.parseLong(end);
-        return evaluate(text, startValue, endValue);
+        DayBits daybits = DayBitsUtils.parse(text);
+        if (daybits == null) {
+            return null;
+        }
+        return Long.valueOf(daybits.count(start, end));
     }
 
     public Long evaluate(String text, String start) {

@@ -26,4 +26,14 @@ public class DayBitsExplain extends UDF {
         
         return daybits.explain(startDate, endDate);
     }
+    
+    public String evaluate(String text, Long startDate, Long endDate) {
+        DayBits daybits = DayBitsUtils.parse(text);
+        
+        if (daybits == null) {
+            return null;
+        }
+        
+        return daybits.explain(startDate, endDate);
+    }
 }

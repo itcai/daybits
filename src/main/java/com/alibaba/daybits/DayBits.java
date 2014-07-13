@@ -1,18 +1,24 @@
 package com.alibaba.daybits;
 
+import static com.alibaba.daybits.DayBitsUtils.end;
+import static com.alibaba.daybits.DayBitsUtils.start;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class DayBits {
 
-    List<Year> beforeYears;
-    List<Year> years;
+    public final static int START = 19700101;
+    public final static int END   = 23991231;
+
+    List<Year>              beforeYears;
+    List<Year>              years;
 
     public DayBits(){
     }
 
-    public void add(Year year) {
+    void add(Year year) {
         if (years == null) {
             years = new ArrayList<Year>(4);
         }
@@ -100,6 +106,18 @@ public class DayBits {
     }
 
     public Long first() {
+        return first(START, END);
+    }
+
+    public Long first(String start, String end) {
+        return first(start(start), end(end));
+    }
+
+    public Long first(Long start, Long end) {
+        return first(start(start), end(end));
+    }
+
+    public Long first(int start, int end) {
         int first = -1;
         if (beforeYears != null) {
             for (int i = beforeYears.size() - 1; i >= 0; --i) {
@@ -107,7 +125,7 @@ public class DayBits {
                 if (year == null) {
                     continue;
                 }
-                first = year.first(2012 - i);
+                first = year.first(2012 - i, start, end);
                 if (first != -1) {
                     return (long) first;
                 }
@@ -121,7 +139,7 @@ public class DayBits {
                     continue;
                 }
 
-                first = year.first(2013 + i);
+                first = year.first(2013 + i, start, end);
                 if (first != -1) {
                     return (long) first;
                 }
@@ -136,6 +154,21 @@ public class DayBits {
     }
 
     public Long last() {
+        return last(START, END);
+    }
+
+    public Long last(String start, String end) {
+        return last(start(start), end(end));
+    }
+
+    public Long last(Long start, Long end) {
+        return last(start(start), end(end));
+    }
+
+    public Long last(int start, int end) {
+        DayBitsUtils.check(start);
+        DayBitsUtils.check(end);
+
         int last = -1;
         if (years != null) {
             for (int i = years.size() - 1; i >= 0; --i) {
@@ -143,7 +176,7 @@ public class DayBits {
                 if (year == null) {
                     continue;
                 }
-                last = year.last(2013 + i);
+                last = year.last(2013 + i, start, end);
                 if (last != -1) {
                     return (long) last;
                 }
@@ -157,7 +190,7 @@ public class DayBits {
                     continue;
                 }
 
-                last = year.last(2012 - i);
+                last = year.last(2012 - i, start, end);
                 if (last != -1) {
                     return (long) last;
                 }
@@ -177,6 +210,15 @@ public class DayBits {
         }
 
         int intDateValue = Integer.parseInt(dateValue);
+        return get(intDateValue);
+    }
+    
+    public Boolean get(Long dateValue) {
+        if (dateValue == null) {
+            return null;
+        }
+        
+        int intDateValue = dateValue.intValue();
         return get(intDateValue);
     }
 
@@ -247,9 +289,11 @@ public class DayBits {
     }
 
     public String explain(String start, String end) {
-        int startValue = start == null ? 19700101 : Integer.parseInt(start);
-        int endValue = end == null ? 20991231 : Integer.parseInt(end);
-        return explain(startValue, endValue);
+        return explain(start(start), end(end));
+    }
+    
+    public String explain(Long start, Long end) {
+        return explain(start(start), end(end));
     }
 
     public String explain(int start, int end) {
@@ -322,9 +366,11 @@ public class DayBits {
     }
 
     public int count(Long start, Long end) {
-        int startValue = start == null ? 19700101 : start.intValue();
-        int endValue = end == null ? 29991231 : end.intValue();
-        return count(startValue, endValue);
+        return count(start(start), end(end));
+    }
+    
+    public int count(String start, String end) {
+        return count(start(start), end(end));
     }
 
     public int count(int start, int end) {
@@ -386,11 +432,11 @@ public class DayBits {
         }
     }
 
-    public Year getYear(int yearIndex) {
+    Year getYear(int yearIndex) {
         return getYear(yearIndex, false);
     }
 
-    public Year getYear(int yearIndex, boolean create) {
+    Year getYear(int yearIndex, boolean create) {
         if (yearIndex >= 0) {
             if (years == null) {
                 if (!create) {
@@ -446,11 +492,7 @@ public class DayBits {
         }
     }
 
-    public static int yearIndex(int year) {
-        return year - 2013;
-    }
-
-    public static class Year {
+    static class Year {
 
         Quarter spring;
         Quarter summer;
@@ -596,13 +638,17 @@ public class DayBits {
 
             Quarter quarter;
             if (month <= 3) {
-                quarter = getSpring(true);
+                quarter = getSpring(value);
             } else if (month <= 6) {
-                quarter = getSummer(true);
+                quarter = getSummer(value);
             } else if (month <= 9) {
-                quarter = getAutumn(true);
+                quarter = getAutumn(value);
             } else {
-                quarter = getWinter(true);
+                quarter = getWinter(value);
+            }
+
+            if (quarter == null) {
+                return false;
             }
 
             int dayOfQuarter = DayBitsUtils.dayOfQuarter(year, month, dayOfMonth);
@@ -674,48 +720,48 @@ public class DayBits {
             quarter.explain(out, year, quarterIndex, start, end);
         }
 
-        public int first(int year) {
-            int first = first(year, 0, spring);
+        public int first(int year, int start, int end) {
+            int first = first(year, 0, spring, start, end);
             if (first == -1) {
-                first = first(year, 1, summer);
+                first = first(year, 1, summer, start, end);
             }
             if (first == -1) {
-                first = first(year, 2, autumn);
+                first = first(year, 2, autumn, start, end);
             }
             if (first == -1) {
-                first = first(year, 3, winter);
+                first = first(year, 3, winter, start, end);
             }
             return first;
         }
 
-        private int first(int year, int quarterIndex, Quarter quarter) {
+        private int first(int year, int quarterIndex, Quarter quarter, int start, int end) {
             if (quarter == null) {
                 return -1;
             }
 
-            return quarter.first(year, quarterIndex);
+            return quarter.first(year, quarterIndex, start, end);
         }
 
-        public int last(int year) {
-            int last = last(year, 3, winter);
+        public int last(int year, int start, int end) {
+            int last = last(year, 3, winter, start, end);
             if (last == -1) {
-                last = last(year, 2, autumn);
+                last = last(year, 2, autumn, start, end);
             }
             if (last == -1) {
-                last = last(year, 1, summer);
+                last = last(year, 1, summer, start, end);
             }
             if (last == -1) {
-                last = last(year, 0, spring);
+                last = last(year, 0, spring, start, end);
             }
             return last;
         }
 
-        private int last(int year, int quarterIndex, Quarter quarter) {
+        private int last(int year, int quarterIndex, Quarter quarter, int start, int end) {
             if (quarter == null) {
                 return -1;
             }
 
-            return quarter.last(year, quarterIndex);
+            return quarter.last(year, quarterIndex, start, end);
         }
 
         public int count() {
@@ -789,7 +835,7 @@ public class DayBits {
 
     }
 
-    public static class Quarter {
+    static class Quarter {
 
         private byte[] bytes;
 
@@ -888,7 +934,7 @@ public class DayBits {
             }
         }
 
-        public int first(int year, int quarterIndex) {
+        public int first(int year, int quarterIndex, int start, int end) {
             if (bytes == null) {
                 return -1;
             }
@@ -900,7 +946,9 @@ public class DayBits {
                     if (((value & (1 << bitIndex)) != 0)) {
                         int dayOfQuarter = i * 8 + bitIndex;
                         int dateValue = DayBitsUtils.getDateValue(year, quarterIndex, dayOfQuarter);
-                        return dateValue;
+                        if (dateValue >= start && dateValue <= end) {
+                            return dateValue;
+                        }
                     }
                 }
             }
@@ -908,7 +956,7 @@ public class DayBits {
             return -1;
         }
 
-        public int last(int year, int quarterIndex) {
+        public int last(int year, int quarterIndex, int start, int end) {
             if (bytes == null) {
                 return -1;
             }
@@ -920,7 +968,9 @@ public class DayBits {
                     if (((value & (1 << bitIndex)) != 0)) {
                         int dayOfQuarter = i * 8 + bitIndex;
                         int dateValue = DayBitsUtils.getDateValue(year, quarterIndex, dayOfQuarter);
-                        return dateValue;
+                        if (dateValue >= start && dateValue <= end) {
+                            return dateValue;
+                        }
                     }
                 }
             }

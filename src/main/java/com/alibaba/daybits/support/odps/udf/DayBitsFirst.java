@@ -16,4 +16,20 @@ public class DayBitsFirst extends UDF {
         }
         return daybits.first();
     }
+    
+    public Long evaluate(String text, String start, String end) {        
+        DayBits daybits = DayBitsUtils.parse(text);
+        if (daybits == null) {
+            return null;
+        }
+        return daybits.first(start, end);
+    }
+    
+    public Long evaluate(String text, Long start, Long end) {        
+        DayBits daybits = DayBitsUtils.parse(text);
+        if (daybits == null) {
+            return null;
+        }
+        return daybits.first(start, end);
+    }
 }
