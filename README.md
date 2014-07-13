@@ -134,7 +134,7 @@ odps函数
     
       
 ## daybits_set
-用途:设置daybits数据中某一天的数值<br/>
+用途:设置daybits数据中某一天的值<br/>
 函数定义:
 
 	STRING daybits_set(STRING daybits, STRING date)
@@ -162,3 +162,52 @@ odps函数
     from my_table
     
     
+## daybits_get
+用途: 判断daybits数据中某一天的值<br/>
+函数定义:
+     
+     BOOLEAN daybits_get(STRING daybits, STRING date)
+     BOOLEAN daybits_get(STRING daybits, BIGINT date)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ date yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否已经设置<br/>
+
+示例:
+    
+    select daybits_get(';AAAAAChCywMgAg==', 20140205) from dual
+    
+    select daybits_get(';AAAAAChCywMgAg==', '20140205‘) from dual
+
+## daybits_count    
+用途: 判断daybits数据中存在的天数<br/>
+函数定义:
+     
+     BIGINT daybits_count(STRING daybits)
+     BIGINT daybits_count(STRING daybits, STRING start)
+     BIGINT daybits_count(STRING daybits, STRING start, STRING end)
+     BIGINT daybits_count(STRING daybits, BIGINT start)
+     BIGINT daybits_count(STRING daybits, BIGINT start, BIGINT end)
+     
+参数:<br/>
+ daybits daybits格式字符串<br/>
+ start 开始日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ end 结束日期 yyyymmdd格式日期字符串，或等价整数，比如20140701<br/>
+ <br/>
+返回值: 是否已经设置<br/>
+
+示例:
+    
+    -- ;AAAAAChCywMgAg==的结果是: 20140205,20140207,20140211,20140216,20140218,20140219,20140221,20140224,20140225,20140226,20140227,20140311,20140315
+    select daybits_count(';AAAAAChCywMgAg==') from dual -- 返回14
+    
+    select daybits_count(';AAAAAChCywMgAg==', 20140205) from dual -- 返回13
+    
+    select daybits_count(';AAAAAChCywMgAg==', 20140205, 20140207) from dual -- 返回2
+    
+    -- 查找20140301~20140331期间出现的记录
+    select *
+    from my_tabel
+    where daybits_count(event_trace, 20140301, 20140331) > 0
