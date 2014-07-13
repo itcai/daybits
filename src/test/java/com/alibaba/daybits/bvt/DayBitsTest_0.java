@@ -26,7 +26,21 @@ public class DayBitsTest_0 extends TestCase {
 
         Assert.assertFalse(daybits.set(20140201)); // not changed
         Assert.assertFalse(daybits.set(20130102)); // no changed
-
+        
+        Assert.assertFalse(daybits.set(20140201, true)); // not changed
+        Assert.assertFalse(daybits.set(20130102, true)); // no changed
+        
+        Assert.assertEquals("Ag==;AAAAgA==", daybits.toString());
+        Assert.assertTrue(daybits.set(20140201, false));
+        Assert.assertEquals("Ag==", daybits.toString());
+        
+        Assert.assertTrue(daybits.set(20130102, false));
+        Assert.assertEquals("", daybits.toString());
+        
+        Assert.assertTrue(daybits.set(20140201, true));
+        Assert.assertTrue(daybits.set(20130102, true));
+        Assert.assertEquals("Ag==;AAAAgA==", daybits.toString());
+        
         Assert.assertEquals(2, daybits.count());
         Assert.assertEquals(20130102, daybits.first().intValue());
         Assert.assertEquals(20140201, daybits.last().intValue());

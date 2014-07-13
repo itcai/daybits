@@ -19,7 +19,7 @@ public class DayBits {
 
         years.add(year);
     }
-    
+
     public void and(DayBits o) {
         this.beforeYears = DayBitsUtils.and(this.beforeYears, o.beforeYears);
         this.years = DayBitsUtils.and(this.years, o.years);
@@ -222,8 +222,28 @@ public class DayBits {
         DayBitsUtils.check(dateValue);
 
         int yearIndex = (dateValue / 10000) - 2013;
-        Year year = getYear(yearIndex, true);
-        return year.set(dateValue, value);
+
+        Year year;
+        if (value) {
+            year = getYear(yearIndex, true);
+        } else {
+            year = getYear(yearIndex, false);
+            if (year == null) {
+                return false;
+            }
+        }
+
+        boolean changed = year.set(dateValue, value);
+
+        if (changed) {
+            if (yearIndex >= 0) {
+                this.years = DayBitsUtils.compact_years(years);
+            } else {
+                this.beforeYears = DayBitsUtils.compact_years(beforeYears);
+            }
+        }
+
+        return changed;
     }
 
     public String explain(String start, String end) {
@@ -494,14 +514,14 @@ public class DayBits {
 
             return changed;
         }
-        
+
         public void and(Year o) {
             this.spring = DayBitsUtils.and(this.spring, o.spring);
             this.summer = DayBitsUtils.and(this.summer, o.summer);
             this.autumn = DayBitsUtils.and(this.autumn, o.autumn);
             this.winter = DayBitsUtils.and(this.winter, o.winter);
         }
-        
+
         public Quarter getSpring(boolean create) {
             if (create && spring == null) {
                 spring = new Quarter(null);
@@ -701,7 +721,7 @@ public class DayBits {
         public int count() {
             return count(spring) + count(summer) + count(autumn) + count(winter);
         }
-        
+
         public boolean isEmpty() {
             return count() == 0;
         }
@@ -921,11 +941,11 @@ public class DayBits {
 
             return ((bytes[byteIndex] & (1 << bitIndex)) != 0);
         }
-        
+
         public void and(Quarter o) {
             this.bytes = DayBitsUtils.and(this.bytes, o.bytes);
         }
-        
+
         public boolean set(int dayOfQuarter) {
             return set(dayOfQuarter, true);
         }
